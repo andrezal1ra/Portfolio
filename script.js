@@ -113,3 +113,79 @@ function languageColor(language) {
 }
 
 loadGitHubRepos();
+
+
+// Progressive Web App: register the service worker and expose installation when supported.
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(error => {
+      console.warn('PWA service worker registration failed:', error);
+    });
+  });
+}
+
+let deferredInstallPrompt = null;
+const installButton = document.getElementById('pwa-install');
+
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt = event;
+  if (installButton) installButton.hidden = false;
+});
+
+installButton?.addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  installButton.hidden = true;
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt = null;
+  if (installButton) installButton.hidden = true;
+});
+
+// Device feature: browser geolocation (GPS/location services).
+const locationButton = document.getElementById('location-button');
+const locationStatus = document.getElementById('location-status');
+const locationData = document.getElementById('location-data');
+const latitude = document.getElementById('latitude');
+const longitude = document.getElementById('longitude');
+const accuracy = document.getElementById('accuracy');
+
+function setLocationStatus(message) {
+  if (locationStatus) locationStatus.textContent = message;
+}
+
+locationButton?.addEventListener('click', () => {
+  if (!('geolocation' in navigator)) {
+    setLocationStatus('LOCATION // NOT SUPPORTED');
+    return;
+  }
+
+  setLocationStatus('LOCATION // REQUESTING ACCESS...');
+  locationButton.disabled = true;
+
+  navigator.geolocation.getCurrentPosition(
+    position => {
+      const { latitude: lat, longitude: lon, accuracy: meters } = position.coords;
+      latitude.textContent = `${lat.toFixed(5)}°`;
+      longitude.textContent = `${lon.toFixed(5)}°`;
+      accuracy.textContent = `${Math.round(meters)} m`;
+      locationData.hidden = false;
+      setLocationStatus('LOCATION // SIGNAL ACQUIRED');
+      locationButton.disabled = false;
+    },
+    error => {
+      const messages = {
+        1: 'PERMISSION DENIED',
+        2: 'POSITION UNAVAILABLE',
+        3: 'REQUEST TIMED OUT'
+      };
+      setLocationStatus(`LOCATION // ${messages[error.code] || 'ERROR'}`);
+      locationButton.disabled = false;
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+  );
+});

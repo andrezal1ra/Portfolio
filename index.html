@@ -5,6 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#1f004b">
   <meta name="description" content="Portfólio de Andreza Lira — estudante de ADS, desenvolvimento web e UI/UX.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Andreza Lira">
+  <link rel="manifest" href="manifest.webmanifest">
   <title>Andreza Lira — Portfolio OS</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -27,6 +31,7 @@
       <a href="#contact"><small>05</small> CONTACT</a>
     </nav>
     <span class="online"><i></i> SYSTEM ONLINE</span>
+    <button class="pwa-install" id="pwa-install" type="button" hidden>INSTALL APP ↗</button>
   </header>
 
   <main>
@@ -77,6 +82,25 @@
           <div class="panel-footer"><span>LAT 23.5505° S</span><span>MEMORY: ACTIVE</span><span>● READY</span></div>
         </div>
       </div>
+      <section class="device-panel reveal" aria-labelledby="device-panel-title">
+        <div class="window-bar"><span>DEVICE_LOCATION.SYS</span><span>HARDWARE ACCESS</span></div>
+        <div class="device-panel-body">
+          <div>
+            <span class="terminal-label">DEVICE FEATURE / GEOLOCATION</span>
+            <h3 id="device-panel-title">WHERE ARE YOU CONNECTING FROM?</h3>
+            <p>Use the GPS/geolocation capability of your device to demonstrate a real PWA feature. Your coordinates stay in this browser and are not sent to my portfolio.</p>
+          </div>
+          <div class="device-location-actions">
+            <button class="btn btn-primary" id="location-button" type="button">USE MY LOCATION ↗</button>
+            <p class="location-status" id="location-status" role="status" aria-live="polite">LOCATION // STANDBY</p>
+          </div>
+        </div>
+        <div class="location-data" id="location-data" hidden>
+          <span>LAT <strong id="latitude">--</strong></span>
+          <span>LON <strong id="longitude">--</strong></span>
+          <span>ACCURACY <strong id="accuracy">--</strong></span>
+        </div>
+      </section>
     </section>
 
     <section class="section skills" id="skills">
@@ -183,6 +207,6 @@
   </main>
 
   <footer><span>© 2026 ANDREZA LIRA</span><span>DESIGNED WITH CURIOSITY + CODE</span><a href="#home">BACK TO TOP ↑</a></footer>
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
